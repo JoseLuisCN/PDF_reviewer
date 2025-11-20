@@ -241,6 +241,77 @@ def agentic_log_analyzer(analysis_session, analysis_thread, combined_input):
     print(analysis)
     return analysis, analysis_thread
 
+# ##################################################################################################################################
+# # Define el límite máximo de tokens que deseas permitir
+# MAX_TOKENS_ALLOWED = 1000  # Puedes ajustar este valor a tu necesidad
+
+# def parse_log_files(directory_path, log_analyzer, analysis_session, analysis_thread):
+#     """
+#     Parsea todos los archivos de registro en un directorio y detiene el procesamiento
+#     cuando se alcanza un límite de tokens predefinido.
+#     """
+#     global_token_counter = {
+#         "total_prompt_tokens": 0,
+#         "total_completion_tokens": 0,
+#         "total_total_tokens": 0,
+#     }
+
+#     log_files = list(os.listdir(directory_path))
+
+#     for log_file in log_files:
+#         if global_token_counter["total_total_tokens"] >= MAX_TOKENS_ALLOWED:
+#             print(f"\n🚫 ¡Límite de tokens de {MAX_TOKENS_ALLOWED} alcanzado! Se detiene el procesamiento.")
+#             break
+
+#         file_path = os.path.join(directory_path, log_file)
+#         print(f"\nProcesando archivo: {log_file}")
+
+#         try:
+#             with open(file_path, "r", encoding="utf-8") as f:
+#                 content = f.read()
+
+#             system_prompt = extract_system_prompt(content)
+#             conversation_entries = extract_conversation_entries(content)
+
+#             for log_entry in conversation_entries:
+#                 # Verificar el límite de tokens antes de cada interacción
+#                 if global_token_counter["total_total_tokens"] >= MAX_TOKENS_ALLOWED:
+#                     print(f"🚫 ¡Límite de tokens de {MAX_TOKENS_ALLOWED} alcanzado! Se detiene la iteración.")
+#                     break  # Rompe el bucle interno
+                
+#                 if log_entry.strip():
+#                     analysis, analysis_thread = log_analyzer(
+#                         analysis_session, analysis_thread, system_prompt + " " + log_entry
+#                     )
+
+#                     match = re.search(r"\[AGENT]:\s*\n({.*?})$", log_entry, re.DOTALL)
+#                     if match:
+#                         metadata = json.loads(match.group(1))
+#                         if "prompt_tokens" in metadata:
+#                             global_token_counter["total_prompt_tokens"] += metadata["prompt_tokens"]
+#                         if "completion_tokens" in metadata:
+#                             global_token_counter["total_completion_tokens"] += metadata["completion_tokens"]
+#                         if "total_tokens" in metadata:
+#                             global_token_counter["total_total_tokens"] += metadata["total_tokens"]
+
+#                     print(analysis)
+            
+#             else: # Este `else` se ejecuta solo si el bucle interno no fue roto por un `break`
+#                 continue
+#             break # Este `break` rompe el bucle externo si el interno fue roto
+
+#         except (FileNotFoundError, UnicodeDecodeError, IOError) as e:
+#             print(f"Error procesando el archivo {file_path}: {str(e)}")
+#         except Exception as e:
+#             print(f"Error inesperado procesando el archivo {file_path}: {str(e)}")
+#             raise
+
+#     print("\n" + "="*50)
+#     print("✨ **Resumen de Tokens Totales Usados** ✨")
+#     print(f"Tokens de Prompt Totales: {global_token_counter['total_prompt_tokens']}")
+#     print(f"Tokens de Completado Totales: {global_token_counter['total_completion_tokens']}")
+#     print(f"Tokens Totales (Suma): {global_token_counter['total_total_tokens']}")
+#     print("="*50)
 
 # Example usage:
 if __name__ == "__main__":

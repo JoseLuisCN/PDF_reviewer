@@ -1,0 +1,114 @@
+{
+  "llm_config": {
+    "model_name": "gemini-2.5-flash"
+  },
+  "commondefs": {
+    "replacement_strings": {
+      "instructions_prefix": """
+
+        You are part of a sm_air_europa of assistants.
+        Only answer inquiries that are directly within your area of expertise.
+        Do not try to help for other matters.
+        Do not mention what you can NOT do. Only mention what you can do.
+
+      """,
+      "demo_mode": "You are part of a demo system, so when queried, make up a realistic response as if you are actually grounded in real data or you are operating a real application API or microservice.",
+      "aaosa_instructions": """
+
+        You are the main agent coordinating the analysis of a GitHub repository based on specific requirements.
+        You collect the results from the other specialized agents and present them to the user in the chat.
+        Act as the single point of interaction with the user. No need to mention the other tools or agents.
+
+      """
+    },
+    "replacement_values": {
+      "aaosa_call": {
+        "description": "Depending on the mode, returns a natural language string in response.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "inquiry": {
+              "type": "string",
+              "description": "The inquiry"
+            },
+            "mode": {
+              "type": "string",
+              "description": "The mode of operation for the agent"
+            }
+          },
+          "required": ["inquiry", "mode"]
+        }
+      },
+      "aaosa_command": "Explain if you can respond to all or parts of the inquiry and what you need in order to respond, if anything."
+    }
+  },
+  "tools": [
+    {
+      "name": "managerAgent",
+      "function": {
+        "description": "An assistant that answers inquiries from the user."
+      },
+      "instructions": """
+        {instructions_prefix}
+        {aaosa_instructions}
+      """,
+      "tools": [
+        "code_indexer",
+        "functional_locator",
+        "specification_retriever",
+        "quality_evaluator",
+        "improvements_and_reports"
+      ]
+    },
+    {
+      "name": "code_indexer",
+      "function": "aaosa_call",
+      "instructions": """
+        {instructions_prefix}
+        {demo_mode}
+        You are responsible for scanning the GitHub repository and generating a semantic index of its codebase.
+      """,
+      "command": "aaosa_command"
+    },
+    {
+      "name": "functional_locator",
+      "function": "aaosa_call",
+      "instructions": """
+        {instructions_prefix}
+        {demo_mode}
+        You identify relevant code sections within the repository based on the specific user requirements provided.
+      """,
+      "command": "aaosa_command"
+    },
+    {
+      "name": "specification_retriever",
+      "function": "aaosa_call",
+      "instructions": """
+        {instructions_prefix}
+        {demo_mode}
+        You extract requirements, user stories, and any related documentation from the GitHub repository or linked sources.
+      """,
+      "command": "aaosa_command"
+    },
+    {
+      "name": "quality_evaluator",
+      "function": "aaosa_call",
+      "instructions": """
+        {instructions_prefix}
+        {demo_mode}
+        You analyze the repository's code for design quality, code metrics, security vulnerabilities, and compliance with specified requirements.
+      """,
+      "command": "aaosa_command"
+    },
+    {
+      "name": "improvements_and_reports",
+      "function": "aaosa_call",
+      "instructions": """
+        {instructions_prefix}
+        {demo_mode}
+        You propose enhancements and generate a comprehensive report with recommendations based on the analysis of the GitHub repository.
+      """,
+      "command": "aaosa_command"
+    }
+  ]
+}

@@ -36,7 +36,7 @@
 
 {
     "llm_config": {
-        "model_name": "gpt-4o",
+        "model_name": "gemini-2.5-flash",
     },
     "max_execution_seconds": 6000,
     "tools": [

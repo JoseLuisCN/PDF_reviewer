@@ -1,0 +1,21 @@
+incident_id,customer_name,issue_type,description,status,escalated
+ab669dbe-786a-467b-a241-2f1fba37a408,Vicente Zambrano,Lost Baggage,baggage lost on Madrid to Paris flight of August 4th,Logged,False
+4a0c7976-c3d9-4004-9ee9-cafb1a1a36e5,John Doe,Lost Baggage,Lost baggage report for John Doe,Logged,False
+33cd453f-8dee-46dd-9222-aea8f24a4458,Marco Dia,Lost Baggage,Lost baggage report for Marco Dia,Logged,False
+bab71ee7-1e92-4310-bda5-fc1f6586fe2e,John Due,Lost Baggage,Lost baggage,Logged,False
+18152fc9-cb02-4bff-95e2-07e216a27ce6,John Doe,Lost Baggage,John Doe reported lost baggage,Logged,False
+8a2f7f1f-c6ae-4342-9b3d-a8e6b96dad37,John Due,Lost Baggage,Lost baggage report for John Due,Logged,False
+7923533a-fe23-4460-9873-eacae1586557,John Doe,Lost Baggage,Lost baggage reported by John Doe.,Logged,False
+28e6777a-da13-40d0-84a1-b3895c75d4be,John Doe,Lost Baggage,Lost baggage report for John Doe,Logged,False
+88fba96c-4bd8-4819-acf9-27237eb9b9ba,John Doe,Lost Baggage,Lost baggage report for John Doe,Logged,False
+5643221f-eb1f-4d51-8bbc-141302c16496,John Doe,Lost Baggage,Lost baggage for John Doe,Logged,False
+d5f721cd-2dfc-4618-b5d2-2c344492e2a4,John Doe,Lost Baggage,Lost baggage reported,Logged,False
+e7b40d68-b445-43aa-8220-afd91cfd4f1f,John Doe,Lost Baggage,John Doe lost his baggage.,Logged,False
+e861b53c-9ff0-4826-b92b-769dd74d23c7,John Doe,Lost Baggage,Lost baggage report,Logged,False
+f70bc1bf-0237-4f19-9cab-02bd89eadc7e,John Doe,Lost Baggage,Lost baggage report for John Doe,Logged,False
+dcc3fbc5-cf34-42bc-90c7-5efc0c14b47d,John Doe,Lost Baggage,Lost baggage reported by John Doe.,Logged,False
+6cb2c933-6591-4db9-8ff8-e19748e9e6ce,John Doe,Lost Baggage,Lost baggage report,Logged,False
+9be4380d-ed85-4734-b447-9254969778b9,John Doe,Lost Baggage,Lost baggage for John Doe,Logged,False
+9f10a3c9-c30d-42d2-9313-29ded2d2e99d,John Doe,Lost Baggage,Lost baggage for John Doe,Logged,False
+b39356bb-da4e-4473-beb1-e2e641fb82f7,John Doe Doe,Lost Baggage,El usuario John Doe Doe ha reportado la pérdida de su equipaje.,Logged,False
+bbb0b094-371a-44a7-9211-230510ea28ee,John Doe,Lost Baggage,He perdido mi equipaje.,Logged,False

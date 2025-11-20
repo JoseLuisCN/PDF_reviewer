@@ -21,7 +21,7 @@
     "music_nerd_pro_sly.hocon": true,
     "music_nerd_pro_sly_local.hocon": true,
     "hello_world.hocon": true,
-    "advanced_calculator.hocon": false,
+    "advanced_calculator.hocon": true,
     "smart_home.hocon": true,
 
     # Tool integration examples
@@ -31,7 +31,7 @@
     # You can optionally set a custom search URL via the BRAVE_URL environment variable.
     # If BRAVE_URL is not set, the default is: https://api.search.brave.com/res/v1/web/search?q=
     # You can also configure the request timeout (in seconds) using BRAVE_TIMEOUT; the default is 30 seconds.
-    "brave_search.hocon": false,
+    "brave_search.hocon": true,
 
     # To use this search tool, you must
     #
@@ -49,14 +49,14 @@
     #
     # You can optionally set a custom search URL and a custom timeout via the GOOGLE_SEARCH_URL and GOOGLE_SEARCH_TIMEOUT environment variables.
     # Otherwise, the default values of "https://www.googleapis.com/customsearch/v1" and "30" are used, respectively
-    "google_search.hocon": false,
+    "google_search.hocon": true,
 
     "agent_network_html_creator.hocon": true,
     "agentforce.hocon": true,
-    "agentspace_adapter.hocon": false,
+    "agentspace_adapter.hocon": true,
     "pdf_rag.hocon": true,
-    "agentic_rag.hocon": false,
-    "kwik_agents.hocon": false,
+    "agentic_rag.hocon": true,
+    "kwik_agents.hocon": true,
 
     # Requirement to use this agent network:
     # - langchain-openai >= 0.3.26
@@ -73,19 +73,19 @@
     # For details, see https://python.langchain.com/api_reference/_modules/langchain_community/document_loaders/confluence.html#ConfluenceLoader
     # Set "username" and "api_key" in the agent network hocon or 
     # as environment variable "JIRA_USERNAME" and "JIRA_API_TOKEN", respectively.
-    "confluence_rag.hocon": false,
+    "confluence_rag.hocon": true,
     
     # Before turning on and running the following agent network, make sure that:
     # The MCP server is running.
     # The server can be found at servers/MCP/bmi_server.py and run using the following command
     # python bmi_server.py
-    "mcp_bmi_streamable_http.hocon": false,
+    "mcp_bmi_streamable_http.hocon": true,
 
     # The following agent network is an example of Agent2Agent (A2A) Protocol implementation:
     # Make sure to start the A2A server before turning the agent on.
     # The A2Aserver can be found at cservers/A2A/server.py and run by command
     # python server.py
-    "a2a_research_report.hocon": false,
+    "a2a_research_report.hocon": true,
 
     # To use this agent network, you will need to
     # - pip install -U langchain-google-community\[gmail\]
@@ -93,18 +93,26 @@
     # https://developers.google.com/workspace/gmail/api/quickstart/python#authorize_credentials_for_a_desktop_application.
     # Once you've downloaded the credentials.json file and put it in the top level of this repo,
     # you can start using the agent network.
-    "gmail.hocon": false,
+    "gmail.hocon": true,
+
+
+
+    # Personalized projects
+    "air_europe_demo.hocon": true,
+    "basic_agent.hocon": true,
+    "sm_air_europa.hocon": true,
+    "original_sm_air_europa.hocon": true,
 
 
     # Use cases
     "airline_policy.hocon": true,
     "banking_ops.hocon": true,
     "cpg_agents.hocon": true,
-    "insurance_agents.hocon": false,  # This is a deprecated version of insurance_underwriting_agents.hocon
+    "insurance_agents.hocon": true,  # This is a deprecated version of insurance_underwriting_agents.hocon
     "insurance_underwriting_agents.hocon": true,
-    "intranet_agents.hocon": false,  # This is a deprecated version of intranet_agents_with_tools.hocon
+    "intranet_agents.hocon": true,  # This is a deprecated version of intranet_agents_with_tools.hocon
     "intranet_agents_with_tools.hocon": true,
-    "real_estate.hocon": false,
+    "real_estate.hocon": true,
     "retail_ops_and_customer_service.hocon": true,
     "telco_network_support.hocon": true,
     "therapy_vignette_supervisors.hocon": true,
@@ -122,11 +130,11 @@
     "agent_network_designer.hocon": true,
     "six_thinking_hats.hocon": true,
     # Set the following agent network to true before running apps/cruse/interface_flask.py
-    "cruse_agent.hocon": false,
+    "cruse_agent.hocon": true,
     # Set the following agent network to true before running apps/conscious_assistant/interface_flask.py
-    "conscious_agent.hocon": false,
+    "conscious_agent.hocon": true,
     # Set the following agent network to true before running apps/log_analyzer/log_analyzer.py
-    "log_analysis_agents.hocon": false,
+    "log_analysis_agents.hocon": true,
 
     # Demos
 
@@ -153,6 +161,9 @@
     #   The default ports are 30011 for gRPC, 8080 for HTTP, and 4173 for nsflow.
     #   For example, you can run:
     #     python -m run --server-grpc-port 30012 --server-http-port 8081 --nsflow-port 4174
-    "agent_network_architect.hocon": false,
-    "news_sentiment_analysis.hocon": false,
-}
+    "agent_network_architect.hocon": true,
+    "news_sentiment_analysis.hocon": true,
+
+    "software_development_improvement.hocon": true,
+    "sm_air_europa.hocon": true,
+    "pdf_reviewer.hocon": true,}

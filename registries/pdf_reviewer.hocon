@@ -1,0 +1,353 @@
+{
+ 
+  "llm_config": {
+ 
+    "model_name": "azure-gpt-4o-mini"
+ 
+  },
+ 
+  "commondefs": {
+ 
+    "replacement_strings": {
+ 
+      "instructions_prefix": """
+
+        You are part of a pdf_reviewer_agent_network of assistants.
+ 
+        Only answer inquiries that are directly within your area of expertise.
+ 
+        Do not try to help for other matters.
+ 
+        Do not mention what you can NOT do. Only mention what you can do.
+ 
+      """,
+ 
+      "aaosa_instructions": """
+
+        When you receive an inquiry, you will:
+
+            1. Call your tools to determine which down-chain agents in your tools are
+              responsible for all or part of it.
+            2. You will then ask these down-chain agents what they need in order to handle
+              their part of the inquiry. Once the requirements are gathered, you will,
+            3. Delegate the inquiry and the fulfilled requirements to the appropriate down-chain agents.
+            4. Once all down-chain agents respond, you will compile their responses and return the final response.
+
+        You may, in turn, be called by other agents in the system and have to act as a down-chain to them.
+ 
+      """
+ 
+    },
+ 
+    "replacement_values": {
+ 
+      "aaosa_call": {
+ 
+        "description": "Depending on the mode, returns a natural language string in response.",
+ 
+        "parameters": {
+ 
+          "type": "object",
+ 
+          "properties": {
+ 
+            "inquiry": {
+ 
+              "type": "string",
+ 
+              "description": "The inquiry"
+ 
+            },
+ 
+            "mode": {
+ 
+              "type": "string",
+ 
+              "description": "The mode of operation for the agent"
+ 
+            }
+ 
+          },
+ 
+          "required": ["inquiry", "mode"]
+ 
+        }
+ 
+      },
+ 
+      "aaosa_command": "Explain if you can respond to all or parts of the inquiry and what you need in order to respond, if anything."
+ 
+    }
+ 
+  },
+ 
+  "tools": [
+ 
+    {
+ 
+      "name": "compliance_review_manager",
+ 
+      "function": {
+ 
+        "description": "A high-level orchestration assistant that manages the end-to-end workflow for reviewing PDF content for compliance. It interacts directly with the user to gather requirements, initiates PDF-to-text conversion, performs language and visual content analysis, and coordinates rephrasing suggestions to ensure regulatory alignment."
+ 
+      },
+ 
+      "instructions": """
+ 
+        {instructions_prefix}
+        You are the top-level agent responsible for managing the entire process of reviewing PDF content for problematic language, converting it to text from a path given, and offering compliant rephrasing options. 
+        You interact with the user, gather requirements, and orchestrate the workflow through other agents.
+        Your role is to interpret the user's message and determine the intent behind it. 
+        Based on the user's input, classify the request into one of the following categories:
+
+         - Legal language assistance: The user needs help understanding or simplifying legal terminology.
+         - Rephrasing: The user wants the content to be rewritten for clarity, tone, or style.
+         - Visual content analysis: The user is asking to analyze images or other visual elements within the PDF.
+
+        Instructions:
+
+        First invoke the pdf_to_text_converter tool to obtain the text from the PDF. Then pass the text extracted to the others agents, if requiered, and call the agents required.
+        Always respond in the same language used by the user. If the language is Spanish, do not include accent marks (tildes).
+        Do not ask for permission to proceed. Act immediately and call only the agents necessary to fulfill the user's request.
+        Avoid performing any tasks that are not explicitly requested by the user.
+        
+        {aaosa_instructions}
+ 
+      """,
+ 
+      "tools": ["pdf_to_text_converter", "language_compliance_analyzer", "visual_content_analyzer"]
+ 
+    },
+ 
+    {
+ 
+      "name": "pdf_to_text_converter",
+ 
+      "function": {
+ 
+        "description": """
+ 
+          Converts a PDF document to text using OCR when needed.
+ 
+          The tool processes each page of the PDF and extracts readable text using PyMuPDF.
+ 
+          If a page contains only images, Tesseract OCR is used to extract its contents.
+ 
+          Requires:
+ 
+            - "pdf_path" (str): The absolute path to the PDF file to be converted.
+ 
+          Returns a dictionary containing:
+ 
+            - "text": The full extracted text from the PDF.
+ 
+            - "message": A confirmation message about the extraction process.
+ 
+        """,
+ 
+        "parameters": {
+ 
+          "type": "object",
+ 
+          "properties": {
+ 
+            "pdf_path": {
+ 
+              "type": "string",
+ 
+              "description": "The path to the PDF file to be converted."
+ 
+            }
+ 
+          },
+ 
+          "required": ["pdf_path"]
+ 
+        }
+ 
+      },
+ 
+      "class": "pdf_to_text.PDFToTextExtractor",
+ 
+      "command": "aaosa_command",
+ 
+      "tools": ["document_formatter"]
+ 
+    },
+ 
+    {
+ 
+      "name": "document_formatter",
+ 
+      "function": "aaosa_call",
+ 
+      "instructions": """
+ 
+        {instructions_prefix}
+ 
+        You format the extracted text from PDF documents, cleaning up any parsing artifacts and preparing it for language analysis. You ensure the text is well-structured and easy to process by subsequent agents.
+ 
+      """
+ 
+    },
+ 
+    {
+ 
+      "name": "language_compliance_analyzer",
+ 
+      "function": "aaosa_call",
+ 
+      "instructions": """
+ 
+        {instructions_prefix}
+ 
+        You analyze the provided text obtained from pdf_to_text_converter content from medical-related PDFs, especially those intended for product marketing or sales, to detect any problematic, non-compliant, no legal or sensitive language. Your goal is to ensure the content adheres to medical communication standards, avoids controversial claims, and complies with applicable regulations.
+        Your responsibilities:
+
+        Identify any sections of the text that may be:
+
+        -  Misleading or exaggerated in a medical context.
+        -  Non-compliant with healthcare advertising regulations.
+        -  Ethically or legally sensitive.
+        -  Using language that could be interpreted as controversial, discriminatory, or unsubstantiated.
+
+        Do not ask for permission to proceed. Act immediately upon receiving the text.
+
+        Always respond in the same language used by the user. If the language is Spanish, do not include accent marks (tildes).
+
+        Response format:
+        Begin with the message:
+
+        "The parts of the text I found problematic are the following:"
+
+        Then list and provide for each problematic section:
+
+         - Text Evidence: The exact excerpt from the PDF.
+         - Reason for the Issue: A brief explanation of why this section is considered problematic.
+         - Suggested Rephrasing: A revised version that resolves the issue while preserving the intended meaning.
+
+        Ej:
+        1. Text Evidence: ...
+            - Reason for the Issue: ...
+            - Suggested Rephrasing: ...
+
+        2. Text2 Evidence: ...
+            - Reason for the Issue: ...
+            - Suggested Rephrasing: ...
+
+        Only analyze and respond to what the user explicitly requests. Avoid performing any unrelated tasks. 
+      """,
+ 
+      "command": "aaosa_command",
+ 
+      "tools": ["legal_language_specialist", "content_rephraser"]
+ 
+    },
+ 
+    {
+ 
+      "name": "legal_language_specialist",
+ 
+      "function": "aaosa_call",
+ 
+      "instructions": """
+ 
+        {instructions_prefix}
+ 
+
+        You are an expert advisor on legal and regulatory compliance.
+
+        Carefully analyze the provided text and identify any language that may be legally, ethically, or regulatorily problematic.
+
+        For each issue found:
+        - Highlight the specific fragment.
+        - Explain clearly why it is problematic (e.g., vague language, non-compliance, misleading phrasing).
+        - Provide a recommended rephrasing that aligns with applicable laws, regulations, and medical industry standards.
+
+        Your response must be structured and actionable, helping the user improve the text while ensuring full compliance.
+
+        {aaosa_instructions}
+
+
+      """
+ 
+    },
+ 
+    {
+ 
+      "name": "content_rephraser",
+ 
+      "function": "aaosa_call",
+ 
+      "instructions": """
+ 
+        {instructions_prefix}
+ 
+        You generate compliant and appropriate alternative phrasing options for identified problematic language. You aim to maintain the original intent while removing non-compliant elements.
+ 
+      """,
+ 
+      "command": "aaosa_command",
+ 
+      "tools": ["tone_and_style_editor"]
+ 
+    },
+ 
+    {
+ 
+      "name": "tone_and_style_editor",
+ 
+      "function": "aaosa_call",
+ 
+      "instructions": """
+ 
+        {instructions_prefix}
+ 
+        You review the rephrased content to ensure it aligns with the desired tone, style, and brand voice. You refine the suggestions for optimal communication effectiveness.
+ 
+      """
+ 
+    },
+ 
+    {
+ 
+      "name": "visual_content_analyzer",
+ 
+      "function": {
+ 
+        "description": "Analyzes the images in the PDFs for inappropriate or sensitive content using Gemini multimodal capabilities.",
+ 
+        "parameters": {
+ 
+          "type": "object",
+ 
+          "properties": {
+ 
+            "pdf_path": {
+ 
+              "type": "string",
+ 
+              "description": "Path to the PDF file to analyze images from."
+ 
+            }
+ 
+          },
+ 
+          "required": ["pdf_path"]
+ 
+        }
+ 
+      },
+ 
+      "class": "visual_content_analyzer.VisualContentAnalyzer",
+ 
+      "command": "aaosa_command"
+ 
+    },
+ 
+  ]
+ 
+}
+
+ 

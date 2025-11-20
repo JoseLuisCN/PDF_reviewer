@@ -1,5 +1,5 @@
 import os
-
+from dotenv import load_dotenv
 from neuro_san.internals.run_context.langchain.util.api_key_error_check import ApiKeyErrorCheck
 from google import genai
 
@@ -8,11 +8,16 @@ from google import genai
 #  Creates a client, and submits a simple query ("What's the capital of France?").
 #  The response should includes the word "Paris".
 #  Any exceptions (Invalid API Key, OpenAI access being blocked, etc.) are reported.
+load_dotenv()
+
+GOOGLE_API_KEY= os.getenv("GOOGLE_API_KEY")
+GOOGLE_MODEL_NAME=os.getenv("GOOGLE_MODEL_NAME") 
+
 def test_gemini_api_key():
 
     # Set your Gemini details
-    api_key = os.getenv("GOOGLE_API_KEY")  # or use a string directly
-    model_name = os.getenv("GOOGLE_MODEL_NAME")  # e.g., "gemini-pro"
+    api_key = GOOGLE_API_KEY  # or use a string directly
+    model_name = GOOGLE_MODEL_NAME  # e.g., "gemini-pro"
 
     try:
 
